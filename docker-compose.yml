@@ -1,0 +1,21 @@
+version: "3"
+services:
+
+  ### ----- AWS SNS TEST ----- ###
+  aws-sns-test-api:
+    build: .
+    ports:
+      - 8081:8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  sns:
+    image: s12v/sns
+    ports:
+      - 9911:9911
+    volumes:
+     - ./config/db.json:/etc/sns/db.json
+    depends_on:
+    - aws-sns-test-api
